@@ -1,7 +1,6 @@
 ﻿using Application.Repositories;
 using DominClass.Entities.User;
 using Inferstructure.Context;
-using Microsoft.EntityFrameworkCore;
 
 namespace Inferstructure.Repositories;
 
@@ -25,8 +24,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     }
 
 
-    public Task<User> GetByEmail(string email)
-    {
-        return appDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
-    }
+    //public Task<User> GetByEmail(string email)
+    //{
+    //    return appDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+    //}
 }
