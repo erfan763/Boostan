@@ -1,6 +1,6 @@
 ﻿using Boostan.Application.Contracts.Identity;
+using Boostan.Infrastructure.Manager;
 using DominClass.Entities.User;
-using Dotnet.fs.Infrastructure.Identity.Identity.Manager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +31,11 @@ public class AppUserManagerImplementation : IAppUserManager
     public Task<User> GetByUserName(string userName)
     {
         return _userManager.FindByNameAsync(userName);
+    }
+
+    Task<IdentityResult> IAppUserManager.UpdateUserAsync(User user)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<User> GetUserByIdAsync(int userId)

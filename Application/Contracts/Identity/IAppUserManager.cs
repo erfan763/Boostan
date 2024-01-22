@@ -10,4 +10,6 @@ public interface IAppUserManager
     Task<IdentityResult> Login(User user, string password);
 
     Task<User> GetByUserName(string userName);
+
+    Task<IdentityResult> UpdateUserAsync(User user);
 }

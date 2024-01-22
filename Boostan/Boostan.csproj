@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Inferstructure\Inferstructure.csproj" />
     <ProjectReference Include="..\WebFramWork\WebFramWork.csproj" />
   </ItemGroup>
 

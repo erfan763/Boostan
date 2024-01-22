@@ -3,17 +3,18 @@ using System.Text;
 using Boostan.Application.Contracts.Identity;
 using Boostan.Application.Models.ApiResult;
 using Boostan.Domain.Entities.User;
+using Boostan.DomainClass.Entities.User;
 using Boostan.Infrastructure.Dtos;
 using Boostan.Infrastructure.Manager;
+using Boostan.Infrastructure.PermissionManager;
 using Boostan.SharedKernel.Extensions;
 using DominClass.Entities.User;
-
-using Dotnet.fs.Domain.Entities.User;
-using Dotnet.fs.Infrastructure.Identity.Identity.Manager;
+using DominClass.Entities.UserLogin;
+using DominClass.Entities.UserToken;
 using Dotnet.fs.Infrastructure.Identity.Identity.validator;
 using Dotnet.fs.Infrastructure.Identity.UserManager;
+using Inferstructure.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -21,6 +22,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Boostan.Infrastructure.ServiceConfiguration;
+
+public class AppUserStore :
+    UserStore<User, Role, AppDbContext, int, UserClaim, UserRole, UserLogin, UserToken, RoleClaim>
+{
+    public AppUserStore(AppDbContext context, IdentityErrorDescriber describer = null)
+        : base(context, describer)
+    {
+    }
+}
 
 public static class ServiceCollectionExtension
 {
@@ -62,12 +72,12 @@ public static class ServiceCollectionExtension
             options.Lockout.AllowedForNewUsers = false;
             options.User.RequireUniqueEmail = false;
         }).AddUserStore<AppUserStore>();
-            //.AddRoleStore<RoleStore>().
-           
-            //AddUserManager<AppUserManager>().AddRoleManager<AppRoleManager>().AddErrorDescriber<AppErrorDescriber>()
-            //.AddDefaultTokenProviders().AddSignInManager<AppSignInManager>()
-            //.AddDefaultTokenProviders()
-            //.AddPasswordlessLoginTotpTokenProvider();
+        //.AddRoleStore<RoleStore>().
+
+        //AddUserManager<AppUserManager>().AddRoleManager<AppRoleManager>().AddErrorDescriber<AppErrorDescriber>()
+        //.AddDefaultTokenProviders().AddSignInManager<AppSignInManager>()
+        //.AddDefaultTokenProviders()
+        //.AddPasswordlessLoginTotpTokenProvider();
 
 
         //For [ProtectPersonalData] Attribute In Identity
@@ -80,11 +90,6 @@ public static class ServiceCollectionExtension
 
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(ConstantPolicies.DynamicPermission, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                //policy.Requirements.Add(new DynamicPermissionRequirement());
-            });
             options.AddPolicy(ConstantPolicies.CurrentUserResource, policy =>
             {
                 policy.RequireAuthenticatedUser();
@@ -113,7 +118,7 @@ public static class ServiceCollectionExtension
                 ValidateAudience = true, //default : false
                 ValidAudience = identitySettings.Audience,
                 ValidateIssuer = true, //default : false
-                ValidIssuer = identitySettings.Issuer,
+                ValidIssuer = identitySettings.Issuer
 
                 //TokenDecryptionKey = new SymmetricSecurityKey(encryptionkey),
             };
@@ -180,13 +185,13 @@ public static class ServiceCollectionExtension
                     {
                         context.HandleResponse();
 
-                        context.Response.StatusCode = (int)StatusCodes.Status401Unauthorized;
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         await context.Response.WriteAsJsonAsync(new ApiResult("Invalid access token. Please login"));
                     }
                 },
                 OnForbidden = async context =>
                 {
-                    context.Response.StatusCode = (int)StatusCodes.Status403Forbidden;
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
                     await context.Response.WriteAsJsonAsync(new ApiResult(ApiResultStatusCode.Forbidden.ToDisplay()));
                 }
             };

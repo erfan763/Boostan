@@ -1,10 +1,14 @@
 using System.Reflection;
 using Application.Common;
+using Boostan.Application.ServiceConfiguration;
 using Boostan.Controllers;
 using Boostan.Extensions;
+using Boostan.Infrastructure.Dtos;
+using Boostan.Infrastructure.ServiceConfiguration;
 using Boostan.SharedKernel.Extensions;
 using DominClass.Entities.User;
 using FluentValidation;
+using Inferstructure;
 using Mediator;
 
 var builder = WebApplication.CreateBuilder(args);

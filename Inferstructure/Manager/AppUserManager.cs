@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Dotnet.fs.Infrastructure.Identity.Identity.Manager;
+namespace Boostan.Infrastructure.Manager;
 
 public class AppUserManager : UserManager<User>
 {
